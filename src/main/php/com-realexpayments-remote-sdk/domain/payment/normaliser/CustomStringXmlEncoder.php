@@ -88,11 +88,11 @@ class CustomStringXmlEncoder extends SerializerAwareEncoder implements EncoderIn
 		$dom = new \DOMDocument();
 		$dom->loadXML( $data, LIBXML_NONET | LIBXML_NOBLANKS );
 
-		if ( \PHP_VERSION_ID < 80000 || ( defined( 'LIBXML_VERSION' ) && \LIBXML_VERSION < 20900 ) ) {
-			libxml_use_internal_errors( $internalErrors );
-		}
+		libxml_use_internal_errors( $internalErrors );
 
-		libxml_disable_entity_loader( $disableEntities );
+		if ( \PHP_VERSION_ID < 80000 || ( defined( 'LIBXML_VERSION' ) && \LIBXML_VERSION < 20900 ) ) {
+			libxml_disable_entity_loader( $disableEntities );
+		}
 
 		if ( $error = libxml_get_last_error() ) {
 			libxml_clear_errors();
