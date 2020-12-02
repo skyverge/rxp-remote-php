@@ -77,13 +77,21 @@ class CustomStringXmlEncoder extends SerializerAwareEncoder implements EncoderIn
 		}
 
 		$internalErrors  = libxml_use_internal_errors( true );
-		$disableEntities = libxml_disable_entity_loader( true );
+		$disableEntities = null;
+
+		if ( \PHP_VERSION_ID < 80000 || ( defined( 'LIBXML_VERSION' ) && \LIBXML_VERSION < 20900 ) ) {
+			$disableEntities = libxml_disable_entity_loader( true);
+		}
+
 		libxml_clear_errors();
 
 		$dom = new \DOMDocument();
 		$dom->loadXML( $data, LIBXML_NONET | LIBXML_NOBLANKS );
 
-		libxml_use_internal_errors( $internalErrors );
+		if ( \PHP_VERSION_ID < 80000 || ( defined( 'LIBXML_VERSION' ) && \LIBXML_VERSION < 20900 ) ) {
+			libxml_use_internal_errors( $internalErrors );
+		}
+
 		libxml_disable_entity_loader( $disableEntities );
 
 		if ( $error = libxml_get_last_error() ) {
